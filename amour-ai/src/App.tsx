@@ -20,10 +20,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import RazorpayPaymentPage from "./pages/RazorPayPaymentPage";
 import { checkAuth } from "./helper/checkAuth";
+// import "./App.css";
 
 const queryClient = new QueryClient();
 axios.defaults.withCredentials = true; // global
-axios.defaults.baseURL = "http://localhost:4000";
+// axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.baseURL = "https://amour123.vercel.app/";
 
 function App() {
   const [user, setUser] = useState(null);

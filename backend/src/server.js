@@ -15,8 +15,10 @@ import { protectRoute } from "./middleware/protectRoutes.js";
 
 const app = express();
 
-const CLIENT_URL =  "http://localhost:8080"; //process.env.CLIENT_URL || "http://localhost:8080";
-const PORT = process.env.PORT || 4000;
+const CLIENT_URL =  "http://localhost:8080";
+ //process.env.CLIENT_URL || "http://localhost:8080";
+// const CLIENT_URL =  "https://wondrous-haupia-3142c3.netlify.app";
+ const PORT = process.env.PORT || 4000;
 
 app.use(helmet());
 app.use(

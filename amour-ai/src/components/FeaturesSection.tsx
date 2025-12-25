@@ -44,7 +44,8 @@ const FeaturesSection = () => {
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-orange-500/80">
             Two Suites. Total Control.
           </p>
-          <h2 className="bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-3xl md:text-4xl font-bold text-transparent">
+          {/* bg-gradient-to-r from-orange-400 to-red-600 */}
+          <h2 className=" bg-clip-text text-3xl md:text-5xl font-bold section-title text-transparent">
             Profile Suite &amp; Chat War Room
           </h2>
           <p className="mx-auto max-w-2xl text-sm md:text-base text-gray-400 leading-relaxed">

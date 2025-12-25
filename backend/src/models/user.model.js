@@ -10,7 +10,7 @@ const UserSchema = new Schema({
   lastLoginAt: { type: Date },
 
   // NEW: credits and lightweight order tracking to prevent double-crediting
-  credits: { type: Number, default: 10 },
+  credits: { type: Number, default: 4 },
   creditedOrders: { type: [String], default: [] }, // store razorpay_order_id strings
 });
 
