@@ -15,7 +15,7 @@ import { protectRoute } from "./middleware/protectRoutes.js";
 
 const app = express();
 
-const CLIENT_URL =  "http://localhost:8080";
+const CLIENT_URL = ["http://localhost:8080","https://amour123.netlify.app","https://amour-delta.vercel.app","https://amour-gb3dlao5a-masstamilan555s-projects.vercel.app" ];
  //process.env.CLIENT_URL || "http://localhost:8080";
 // const CLIENT_URL =  "https://wondrous-haupia-3142c3.netlify.app";
  const PORT = process.env.PORT || 4000;
