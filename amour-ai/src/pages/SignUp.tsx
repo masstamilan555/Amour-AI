@@ -1,12 +1,12 @@
-
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Lock, Sparkles, Zap, Phone, Shield } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "../context/AuthContext";
 
 // Signup Component
-const Signup = ({ setUser }) => {
+const Signup = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [username, setUsername] = useState("");
@@ -22,6 +22,7 @@ const Signup = ({ setUser }) => {
 
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { signUpApp } = useAuth();
 
   // Manage countdown interval
   useEffect(() => {
@@ -111,37 +112,8 @@ const Signup = ({ setUser }) => {
     }
 
     setSigningUp(true);
-    try {
-      const res = await axios.post("/api/auth/signup", {
-        username,
-        phone,
-        otp,
-      });
-
-      if (res.status === 200) {
-        setUser(res.data?.data);
-        window.location.href = "/";
-        toast({
-          title: "Success",
-          description: "Signup successful!",
-          variant: "success",
-        });
-      } else {
-        toast({
-          title: "Error",
-          description: res.data?.error || "Signup failed",
-          variant: "destructive",
-        });
-      }
-    } catch (err) {
-      toast({
-        title: "Error",
-        description: err.response?.data?.error || "Signup failed",
-        variant: "destructive",
-      });
-    } finally {
-      setSigningUp(false);
-    }
+    await signUpApp({ username, phone, otp });
+    setSigningUp(false);
   };
 
   return (

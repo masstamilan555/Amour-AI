@@ -7,6 +7,7 @@ const UserSchema = new Schema({
   phone: { type: String, required: true, unique: true },
   phoneVerified: { type: Boolean, default: false },
   createdAt: { type: Date, default: () => new Date() },
+  adminAccess: { type: Boolean, default: false },
   lastLoginAt: { type: Date },
 
   // NEW: credits and lightweight order tracking to prevent double-crediting

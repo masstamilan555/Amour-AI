@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, CreditCard } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { plans } from "@/data/plans";
-import { checkAuth } from "@/helper/checkAuth";
+import { useAuth } from "@/context/AuthContext";
 
 // A single-file React component that replicates the Pricing UI from the provided mock
 // and also contains the Razorpay integration (keeps your existing payment logic).
@@ -22,11 +22,12 @@ function loadRazorpayScript(src = "https://checkout.razorpay.com/v1/checkout.js"
   });
 }
 
-export default function RazorpayPaymentPricingUI({setUser}) {
+export default function RazorpayPaymentPricingUI() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [selectedIndex, setSelectedIndex] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { fetchUser } = useAuth();
 
   const handleBuy = async (plan, index) => {
     setSelectedIndex(index);
@@ -84,7 +85,7 @@ export default function RazorpayPaymentPricingUI({setUser}) {
       rzp.on("payment.failed", function (response) {
         toast({ title: "Payment failed", description: response?.error?.description || "Payment not completed", variant: "destructive" });
       });
-      checkAuth(setUser);
+      fetchUser();
       rzp.open();
     } catch (err) {
       console.error(err);

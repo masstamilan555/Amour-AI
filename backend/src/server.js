@@ -7,11 +7,13 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
+import adminRoutes from "./routes/admin.route.js";
 import authRoutes from "./routes/auth.route.js";
 import aiRoutes from "./routes/ai.route.js";
 import paymentRoutes from "./routes/payment.route.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { protectRoute } from "./middleware/protectRoutes.js";
+import { isAdmin } from "./middleware/isAdmin.js";
 
 const app = express();
 
@@ -40,6 +42,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/ai", protectRoute, aiRoutes);
 app.use("/api/payment", protectRoute, paymentRoutes);
+app.use("/api/admin", protectRoute, adminRoutes);
 
 
 app.get("/", (req, res) => {

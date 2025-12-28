@@ -10,8 +10,10 @@
   import heroBg from "@/assets/hero-bg-romantic1.jpg";
   import { useNavigate } from "react-router-dom";
   import { text } from "stream/consumers";
+import { useAuth } from "@/context/AuthContext";
 
-  const HeroSection = ({ user }) => {
+  const HeroSection = () => {
+    const { user } = useAuth();    
     const router = useNavigate();
     return (
       <section className="relative pt-10 md:mt-0 min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#020202]">
@@ -23,7 +25,7 @@
             className="w-full h-full object-cover scale-110 animate-slow-pan"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#5C001C] via-[#020202] to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#5C001C] via-transparent to-[#020202]/20" />
+          <div className="absolute inset-0 bg-gradient-to-b via-transparent to-[#020202]/20" />
         </div>
 
         {/* Glow Effects */}
@@ -39,7 +41,7 @@
               Dominate the Game.
             </span>
           </h1> */}
-          <h1  className="hero-title pb-6 ">
+          <h1 className="hero-title pb-6 ">
             💕 Your Profile, <span className="text-red">Perfected.</span>
             <br />
             <span className="text-accent ">Find Your Match Faster.</span>
@@ -62,28 +64,35 @@
               </p>
             </div>
           ) : (
-            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto mb-20">
-              {/* Buttons */}
-              <Button
-                onClick={() => router("/signup")}
-                // className="group relative h-14 px-10 min-w-[200px] text-lg font-bold rounded-2xl bg-gradient-to-r from-orange-600 to-red-700 text-white shadow-[0_0_40px_-10px_rgba(234,88,12,0.5)] hover:shadow-[0_0_60px_-10px_rgba(234,88,12,0.6)] hover:scale-[1.02] transition-all duration-300 border border-white/10 overflow-hidden"
-                className="btn-hero relative h-14 min-w-[200px] text-lg rounded-2xl overflow-hidden border border-white/10"
-              >
-                <div className="absolute inset-0 group-hover:translate-x-full transition-transform duration-500 skew-x-12 -ml-4 w-1/2 h-full blur-md" />
-                <span className="relative flex items-center gap-2">
-                  Sign Up Free{" "}
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </Button>
+            // <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto mb-20">
+            //   {/* Buttons */}
+            //   <Button
+            //     }
+            //     className="group relative h-14 px-10 min-w-[200px] text-lg font-bold rounded-2xl bg-gradient-to-r from-orange-600 to-red-700 text-white shadow-[0_0_40px_-10px_rgba(234,88,12,0.5)] hover:shadow-[0_0_60px_-10px_rgba(234,88,12,0.6)] hover:scale-[1.02] transition-all duration-300 border border-white/10 overflow-hidden"
+            //     // className="btn-hero relative h-14 min-w-[200px] text-lg rounded-2xl overflow-hidden border border-white/10"
+            //   >
+            //     <div className="absolute inset-0 group-hover:translate-x-full transition-transform duration-500 skew-x-12 -ml-4 w-1/2 h-full blur-md" />
+            //     <span className="relative flex items-center gap-2">
+            //       Sign Up / Login{" "}
+            //       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            //     </span>
+            //   </Button>
 
-              <Button
-                onClick={() => router("/login")}
-                variant="ghost"
-                className=" h-14 px-10 min-w-[200px] text-lg font-semibold rounded-2xl border border-white/10 text-gray-300 hover:bg-white/5 hover:text-white hover:border-white/20 transition-all backdrop-blur-sm btn-outline"
-              >
-                Log In
-              </Button>
-            </div>
+              
+            // </div>
+            <div className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 flex flex-col sm:flex-row items-center justify-center gap-5 w-full sm:w-auto mb-20">
+          <Button 
+          onClick={() => router("/signup")}
+            className="group relative h-14 px-10 min-w-[200px] text-lg font-bold rounded-2xl bg-gradient-to-r from-orange-600 to-red-700 text-white shadow-[0_0_40px_-10px_rgba(234,88,12,0.5)] hover:shadow-[0_0_60px_-10px_rgba(234,88,12,0.6)] hover:scale-[1.02] transition-all duration-300 border border-white/10 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 skew-x-12 -ml-4 w-1/2 h-full blur-md" />
+            <span className="relative flex items-center gap-2">
+              Sign Up / Login <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </span>
+          </Button>
+          
+         
+        </div>
           )}
 
           {/* Feature Highlights (Replaces Stats) */}

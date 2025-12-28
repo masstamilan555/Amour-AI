@@ -3,7 +3,6 @@ import User from "../models/user.model.js";
 export const protectRoute=async(req,res,next)=>{ //next is to call the next routes
     try {
         const token = req.cookies['amour']
-        console.log(token);
         
         
         if(!token){

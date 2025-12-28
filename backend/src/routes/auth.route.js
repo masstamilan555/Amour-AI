@@ -7,8 +7,10 @@ import { getMeController, loginController, logoutController, sendOtpController, 
 
 const router = express.Router();
 
-const checkAuth = async (req, res, next) => {
+export const checkAuth = async (req, res, next) => {
   try {
+
+    
     const token = req.cookies?.amour;
     if (!token)
       return res.status(401).json({ ok: false, error: "no_auth_token" });

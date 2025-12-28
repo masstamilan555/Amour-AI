@@ -62,15 +62,13 @@ const CallToActionSection = () => {
 
 const Footer = () => {
   return (
-    <footer className="bg-[#020202] pt-24 pb-12">
+    <footer className="bg-[#020202] pb-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-24 border-b border-white/5 pb-20">
           
           {/* Brand Column */}
           <div className="md:col-span-4 space-y-8">
-            <h3 className="text-3xl font-bold text-white tracking-tight flex items-center gap-2">
-              Amour<span className="text-red-600">.</span>AI
-            </h3>
+            
             <p className="text-gray-500 max-w-sm leading-relaxed text-base font-light">
               Designing the intersection of artificial intelligence and human connection. 
               We build tools that help you be seen, understood, and loved.
@@ -91,21 +89,7 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-
-          {/* Links Column 2 */}
-          <div className="md:col-span-2">
-            <h4 className="font-semibold text-white mb-8 text-lg">Company</h4>
-            <ul className="space-y-6">
-              {['Manifesto', 'Careers', 'Contact', 'Press Kit'].map((item) => (
-                <li key={item}>
-                  <a href="#" className="text-gray-500 hover:text-white transition-colors text-sm font-medium flex items-center group">
-                    {item}
-                    <ArrowUpRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          
 
            {/* Socials Column */}
            <div className="md:col-span-2">
