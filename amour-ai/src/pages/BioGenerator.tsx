@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { generateBios } from "@/services/ai";
 import {
   Loader2,
   Wand2,
@@ -20,6 +19,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { generateBios } from "@/services/ai";
 const BioGenerator = () => {
   const navigate = useNavigate();
   const { toast } = useToast();

@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ChatAnalyzer from "./pages/ChatAnalyzer";
@@ -11,11 +11,10 @@ import BioGenerator from "./pages/BioGenerator";
 import DpAnalyzer from "./pages/DpAnalyzer";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import { useState } from "react";
 import axios from "axios";
 import RazorpayPaymentPage from "./pages/RazorPayPaymentPage";
 import AdminInfluencers from "./pages/AdminInfluencers";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 const queryClient = new QueryClient();
 axios.defaults.withCredentials = true; // global

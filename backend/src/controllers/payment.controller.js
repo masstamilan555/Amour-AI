@@ -1,7 +1,6 @@
-// controllers/payment.controller.js
 import crypto from "crypto";
 import { razorpay, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } from "../config/razorPay.js";
-import User from "../models/user.model.js"; // adjust path if needed
+import User from "../models/user.model.js";
 
 export const createOrder = async (req, res) => {
   try {
@@ -11,10 +10,8 @@ export const createOrder = async (req, res) => {
     if (!amountNumber || isNaN(amountNumber) || amountNumber <= 0) {
       return res.status(400).json({ success: false, error: "invalid_amount" });
     }
-
     // amount in paise (integer)
     const amountPaise = Math.round(amountNumber * 100);
-
     const options = {
       amount: amountPaise,
       currency,
@@ -39,8 +36,6 @@ export const createOrder = async (req, res) => {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
-
-
 
 export const verifyPayment = async (req, res) => {
   try {
@@ -83,7 +78,6 @@ export const verifyPayment = async (req, res) => {
     
     const userId = req.user?.id || req.user?._id;
     if (!userId) {
-      // Auth required to apply credits. You can change this behavior if you want to support "claim later" flows.
       return res.status(401).json({
         success: false,
         error: "authentication_required_to_credit",

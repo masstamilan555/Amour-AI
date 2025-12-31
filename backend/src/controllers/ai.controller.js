@@ -159,9 +159,6 @@ ERROR HANDLING
 End of system prompt.
 `;
 
-
-
-
 const BIO_SYSTEM_PROMPT = `
 You are a professional dating profile copywriter hired to create short, on-brand bios.
 Return ONLY a raw JSON object with this exact structure:
@@ -187,9 +184,9 @@ Return ONLY a JSON object that exactly matches the schema below. Do NOT include 
 
 JSON schema:
 { 
-  "score": 1.0,                          // float 1.0-10.0 overall score (two decimals)
+  "score": 1.0,                          // float 1.0-10.0 overall score (one decimals)
   "score_breakdown": "",                 // math string showing weighted calculation to two decimals
-  "subscores": {                         // each float 1.0-10.0 (two decimals)
+  "subscores": {                         // each float 1.0-10.0 (one decimals)
     "modern": 1.0,
     "dressing": 1.0,
     "expression": 1.0,
@@ -232,7 +229,7 @@ FLOAT SUBSCORES, STRONGER STYLE BOOSTS & DOCUMENTATION
 - Subscores are floats with two decimals between 1.0 and 10.0 (inclusive).
 - STRONG MODERN STYLE BOOSTS (apply before penalties and document in explainers):
   - If clear modern styling is present (contemporary cut, on-trend outfit, visible fashion intent):
-    +1.00 to modern and +0.75 to dressing (clamp 1.0–10.0).
+    +1.0 to modern and +0.7 to dressing (clamp 1.0–10.0).
   - If outfit is clearly fashion-forward / editorial-level: additional +0.5 to modern (stacking allowed; still clamp).
   - If well-fitted, intentional dressing (good fit, coordinated colors): +0.5 to dressing and +0.3 to expression.
   - If visible neat grooming (hair, trimmed facial hair, clean look): +0.25 to dressing (stacking allowed).
@@ -310,7 +307,6 @@ CONTENT & FORMAT CONSTRAINTS
 - suggestions: 3–6 items, each 8–20 words, actionable and concrete (specify distance/direction/equipment or clear steps).
 - quick_tips: 2–4 tips (6–12 words).
 - tags: 1–5 keywords. If traditional/cultural clothing is present, include tag "cultural".
-- explainers: 0–2 short sentences (8–25 words). If any style boost or penalty was applied, one explainer MUST state which and why.
 - Do NOT invent personal attributes (age, income, health, ethnicity) or reference image metadata.
 - If the subject is not a person or person unidentifiable, set person_confidence low and explain briefly in explainers.
 
@@ -324,27 +320,6 @@ ERROR HANDLING
 
 Return only the JSON object (no markdown, no extra text). End of prompt.
 `;
-
-
-
-/**
- * Helper that calls Groq with axios
- */
-// services/credits.js
-
-/**
- * Atomically deduct credits if:
- *  - user has >= amount credits
- *  - creditedOrders does NOT already contain orderId (idempotency)
- *
- * Uses findOneAndUpdate with condition + $inc + $addToSet so it's atomic.
- *
- * Returns:
- *  { success: true, updatedUser } on success
- *  { success: false, reason } on failure:
- *     reason = 'not_found' | 'already_processed' | 'insufficient_credits'
- */
-// utils.js
 
 export async function deductCredits(userId, amount) {
   if (!Number.isInteger(amount) || amount <= 0) {

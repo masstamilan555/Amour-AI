@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import GaugeComponent from "react-gauge-component";
 import {
   Card,
   CardContent,
@@ -510,41 +509,40 @@ const ChatAnalyzer = () => {
                           </div>
 
                           <div className="grid md:grid-cols-2 gap-4">
-                            {result?.suggested_messages.length!==0 && (
+                            {result?.suggested_messages.length !== 0 && (
                               <div>
-                              <div className="text-sm text-muted-foreground mb-2">
-                                Suggested Next Messages 
-                              </div>
-                              <div className="space-y-3">
-                                {(result.suggested_messages || [])
-                                  .slice(0, 3)
-                                  .map((m, i) => (
-                                    <div
-                                      key={i}
-                                      className="flex items-start justify-between gap-4"
-                                    >
-                                      <div>
-                                        <div className="text-sm font-medium">
-                                          {m.purpose}
+                                <div className="text-sm text-muted-foreground mb-2">
+                                  Suggested Next Messages
+                                </div>
+                                <div className="space-y-3">
+                                  {(result.suggested_messages || [])
+                                    .slice(0, 3)
+                                    .map((m, i) => (
+                                      <div
+                                        key={i}
+                                        className="flex items-start justify-between gap-4"
+                                      >
+                                        <div>
+                                          <div className="text-sm font-medium">
+                                            {m.purpose}
+                                          </div>
+                                          <div className="text-sm text-muted-foreground">
+                                            {m.text}
+                                          </div>
                                         </div>
-                                        <div className="text-sm text-muted-foreground">
-                                          {m.text}
+                                        <div className="flex items-center gap-2">
+                                          <Button
+                                            variant="ghost"
+                                            onClick={() => copyText(m.text)}
+                                          >
+                                            <Copy className="h-4 w-4" />
+                                          </Button>
                                         </div>
                                       </div>
-                                      <div className="flex items-center gap-2">
-                                        <Button
-                                          variant="ghost"
-                                          onClick={() => copyText(m.text)}
-                                        >
-                                          <Copy className="h-4 w-4" />
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  ))}
+                                    ))}
+                                </div>
                               </div>
-                            </div>
                             )}
-                            
 
                             <div>
                               <div className="text-sm text-muted-foreground mb-2">
@@ -563,7 +561,6 @@ const ChatAnalyzer = () => {
                                         <div className="text-sm font-medium">
                                           {c}
                                         </div>
-                                        
                                       </div>
                                     </div>
                                   ))}
@@ -579,7 +576,6 @@ const ChatAnalyzer = () => {
                                         <div className="text-sm font-medium">
                                           {g}
                                         </div>
-                                        
                                       </div>
                                     </div>
                                   ))}
@@ -937,34 +933,26 @@ const ChatAnalyzer = () => {
                         </CardHeader>
                         <CardContent>
                           <div className="grid gap-3">
-                            {result.message_reviews.map(
-                              (m, idx: number) => (
-                                <div
-                                  key={idx}
-                                  className="p-3 border rounded-md"
-                                >
-                                  <div className="flex justify-between items-start gap-3">
-                                    <div>
+                            {result.message_reviews.map((m, idx: number) => (
+                              <div key={idx} className="p-3 border rounded-md">
+                                <div className="flex justify-between items-start gap-3">
+                                  <div>
                                     <div className="text-xs text-muted-foreground mb-2">
-                                        Message
-                                      </div>
-                                      <div className="text-base">
-                                        {m.text}
-                                      </div>
-                                  
+                                      Message
                                     </div>
-                                    <div className="text-right">
-                                      <div className="text-xs text-muted-foreground mb-2">
-                                        Rewrite
-                                      </div>
-                                      <div className="text-sm font-medium">
-                                        {m.improvement}
-                                      </div>
+                                    <div className="text-base">{m.text}</div>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-xs text-muted-foreground mb-2">
+                                      Rewrite
+                                    </div>
+                                    <div className="text-sm font-medium">
+                                      {m.improvement}
                                     </div>
                                   </div>
                                 </div>
-                              )
-                            )}
+                              </div>
+                            ))}
                           </div>
                         </CardContent>
                       </Card>

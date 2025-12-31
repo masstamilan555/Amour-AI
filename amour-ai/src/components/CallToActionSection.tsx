@@ -1,4 +1,12 @@
-import { Heart, Sparkles, Github, Twitter, Instagram, Mail, ArrowUpRight } from "lucide-react";
+import {
+  Heart,
+  Sparkles,
+  Github,
+  Twitter,
+  Instagram,
+  Mail,
+  ArrowUpRight,
+} from "lucide-react";
 
 const CallToActionSection = () => {
   return (
@@ -10,7 +18,6 @@ const CallToActionSection = () => {
       </div>
 
       <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
-        
         {/* Animated Icon Container */}
         <div className="mb-12 inline-flex items-center justify-center">
           <div className="relative group">
@@ -20,7 +27,7 @@ const CallToActionSection = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Main Statement */}
         <h2 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-white mb-8 leading-[1.1]">
           Love is not luck. <br />
@@ -28,11 +35,15 @@ const CallToActionSection = () => {
             It's a Science.
           </span>
         </h2>
-        
+
         {/* Supporting Text */}
         <p className="text-xl md:text-2xl text-gray-400 mb-16 max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
-          Your journey to meaningful connection starts with optimizing how you present your authentic self. 
-          <span className="text-gray-300 font-normal"> Welcome to the future of dating.</span>
+          Your journey to meaningful connection starts with optimizing how you
+          present your authentic self.
+          <span className="text-gray-300 font-normal">
+            {" "}
+            Welcome to the future of dating.
+          </span>
         </p>
 
         {/* Minimalist Trust Indicator */}
@@ -65,23 +76,30 @@ const Footer = () => {
     <footer className="bg-[#020202] pb-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 mb-24 border-b border-white/5 pb-20">
-          
           {/* Brand Column */}
           <div className="md:col-span-4 space-y-8">
-            
             <p className="text-gray-500 max-w-sm leading-relaxed text-base font-light">
-              Designing the intersection of artificial intelligence and human connection. 
-              We build tools that help you be seen, understood, and loved.
+              Designing the intersection of artificial intelligence and human
+              connection. We build tools that help you be seen, understood, and
+              loved.
             </p>
           </div>
-          
+
           {/* Links Column 1 */}
           <div className="md:col-span-2 md:col-start-7">
             <h4 className="font-semibold text-white mb-8 text-lg">Platform</h4>
             <ul className="space-y-6">
-              {['Profile Suite', 'Chat War Room', 'Photo Analyzer', 'Pricing'].map((item) => (
+              {[
+                "Profile Suite",
+                "Chat War Room",
+                "Photo Analyzer",
+                "Pricing",
+              ].map((item) => (
                 <li key={item}>
-                  <a href="#" className="text-gray-500 hover:text-white transition-colors text-sm font-medium flex items-center group">
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-white transition-colors text-sm font-medium flex items-center group"
+                  >
                     {item}
                     <ArrowUpRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </a>
@@ -89,28 +107,37 @@ const Footer = () => {
               ))}
             </ul>
           </div>
-          
 
-           {/* Socials Column */}
-           <div className="md:col-span-2">
+          {/* Socials Column */}
+          <div className="md:col-span-2">
             <h4 className="font-semibold text-white mb-8 text-lg">Connect</h4>
             <div className="flex gap-4">
               {[Twitter, Instagram, Github, Mail].map((Icon, i) => (
-                <a key={i} href="#" className="p-3 rounded-full bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-110">
+                <a
+                  key={i}
+                  href="#"
+                  className="p-3 rounded-full bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-300 hover:scale-110"
+                >
                   <Icon className="w-5 h-5" />
                 </a>
               ))}
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-gray-600 font-medium uppercase tracking-wide">
           <p>© 2025 Amour AI Inc.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-gray-400 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-gray-400 transition-colors">Terms</a>
-            <a href="#" className="hover:text-gray-400 transition-colors">Sitemap</a>
+            <a href="#" className="hover:text-gray-400 transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-gray-400 transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-gray-400 transition-colors">
+              Sitemap
+            </a>
           </div>
         </div>
       </div>

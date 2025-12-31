@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Plus, X, DollarSign, Users, TrendingUp } from "lucide-react";
 import axios from "axios";
-import copy from "copy-to-clipboard";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,23 +14,17 @@ export default function AdminInfluencers() {
   const [page, setPage] = useState(1);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState("");
-  
+
   const [newContact, setNewContact] = useState("");
   const { toast } = useToast();
   //Function to add text to clipboard
-  const copyToClipboard = (text) => {
-    // Text from the html element
-    // Adding text value to clipboard using copy function
-    const isCopy = copy(text);
-
-    //Dispalying notification
-    if (isCopy) {
-      toast({
-        title: "Copied to Clipboard",
-        description: "Your referral link has been copied.",
-        variant: "success",
-      });
-    }
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied to Clipboard",
+      description: "Your referral link has been copied.",
+      variant: "success",
+    });
   };
 
   const fetchList = async () => {
@@ -138,9 +131,14 @@ export default function AdminInfluencers() {
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-5xl font-extrabold text-white mb-2">
-            Influencer <span className="bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-transparent">Management</span>
+            Influencer{" "}
+            <span className="bg-gradient-to-r from-orange-400 to-red-600 bg-clip-text text-transparent">
+              Management
+            </span>
           </h1>
-          <p className="text-gray-400 text-lg">Manage and track your influencer partnerships</p>
+          <p className="text-gray-400 text-lg">
+            Manage and track your influencer partnerships
+          </p>
         </div>
 
         {/* Stats Cards */}
@@ -148,8 +146,12 @@ export default function AdminInfluencers() {
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm font-medium mb-1">Total Amount Paid</p>
-                <p className="text-4xl font-bold text-white">₹{totalEarnings.toLocaleString()}</p>
+                <p className="text-gray-400 text-sm font-medium mb-1">
+                  Total Amount Paid
+                </p>
+                <p className="text-4xl font-bold text-white">
+                  ₹{totalEarnings.toLocaleString()}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-green-500/20 border border-green-500/30">
                 <DollarSign className="w-6 h-6 text-green-400" />
@@ -160,8 +162,12 @@ export default function AdminInfluencers() {
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm font-medium mb-1">Pending Payouts</p>
-                <p className="text-4xl font-bold text-orange-400">₹{totalPending.toLocaleString()}</p>
+                <p className="text-gray-400 text-sm font-medium mb-1">
+                  Pending Payouts
+                </p>
+                <p className="text-4xl font-bold text-orange-400">
+                  ₹{totalPending.toLocaleString()}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-orange-500/20 border border-orange-500/30">
                 <TrendingUp className="w-6 h-6 text-orange-400" />
@@ -172,8 +178,12 @@ export default function AdminInfluencers() {
           <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm font-medium mb-1">Total Referrals</p>
-                <p className="text-4xl font-bold text-blue-400">{totalReferrals}</p>
+                <p className="text-gray-400 text-sm font-medium mb-1">
+                  Total Referrals
+                </p>
+                <p className="text-4xl font-bold text-blue-400">
+                  {totalReferrals}
+                </p>
               </div>
               <div className="p-3 rounded-xl bg-blue-500/20 border border-blue-500/30">
                 <Users className="w-6 h-6 text-blue-400" />
@@ -212,25 +222,45 @@ export default function AdminInfluencers() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-white/10 bg-white/5">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Name</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Referrals</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Referral Link</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Contact</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Total Paid</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Pending</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">Action</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Name
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Referrals
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Referral Link
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Contact
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Total Paid
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Pending
+                  </th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-300">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-8 text-center text-gray-400"
+                    >
                       Loading...
                     </td>
                   </tr>
                 ) : filteredList.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-6 py-8 text-center text-gray-400">
+                    <td
+                      colSpan={6}
+                      className="px-6 py-8 text-center text-gray-400"
+                    >
                       No influencers found
                     </td>
                   </tr>
@@ -249,16 +279,26 @@ export default function AdminInfluencers() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <button >
-                        
-                      <button onClick={()=>copyToClipboard(`http://localhost:8080/signup?ref=${i.referalLink}`)} className="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium">
-                        http://localhost:8080/signup?ref={i.referalLink}
-                      </button>
+                      <button>
+                        <button
+                          onClick={() =>
+                            copyToClipboard(
+                              `http://localhost:8080/signup?ref=${i.referalLink}`
+                            )
+                          }
+                          className="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium"
+                        >
+                          http://localhost:8080/signup?ref={i.referalLink}
+                        </button>
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-gray-400 text-sm">{i.contact}</td>
+                    <td className="px-6 py-4 text-gray-400 text-sm">
+                      {i.contact}
+                    </td>
                     <td className="px-6 py-4">
-                      <p className="font-semibold text-green-400">₹{i.totalEarning.toLocaleString()}</p>
+                      <p className="font-semibold text-green-400">
+                        ₹{i.totalEarning.toLocaleString()}
+                      </p>
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-sm font-medium">
@@ -286,7 +326,9 @@ export default function AdminInfluencers() {
             <div className="w-full max-w-md mx-4">
               <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 shadow-2xl">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-2xl font-bold text-white">Add New Influencer</h2>
+                  <h2 className="text-2xl font-bold text-white">
+                    Add New Influencer
+                  </h2>
                   <button
                     onClick={() => setShowCreateForm(false)}
                     className="p-2 rounded-lg hover:bg-white/10 transition-colors"
@@ -297,7 +339,9 @@ export default function AdminInfluencers() {
 
                 <div className="space-y-4 mb-6">
                   <div>
-                    <label className="block text-sm font-semibold text-white mb-2">Name</label>
+                    <label className="block text-sm font-semibold text-white mb-2">
+                      Name
+                    </label>
                     <input
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}

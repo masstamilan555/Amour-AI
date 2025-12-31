@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { PenTool, Camera, MessageCircle, Lightbulb, CheckCircle2 } from "lucide-react";
+import {
+  PenTool,
+  Camera,
+  MessageCircle,
+  Lightbulb,
+  CheckCircle2,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const FeaturesSection = () => {
@@ -16,14 +22,16 @@ const FeaturesSection = () => {
     {
       icon: Camera,
       title: "DP Analyzer",
-      description: "Audit your photos for lighting, composition, and attraction signals.",
+      description:
+        "Audit your photos for lighting, composition, and attraction signals.",
       path: "/tools/dp-analyzer",
       accent: "from-pink-500 to-purple-500",
     },
     {
       icon: Lightbulb,
       title: "Expert Dating Advice",
-      description: "Learn proven tactics to upgrade your entire dating presence.",
+      description:
+        "Learn proven tactics to upgrade your entire dating presence.",
       path: null,
       accent: "from-amber-400 to-orange-500",
     },
@@ -49,7 +57,8 @@ const FeaturesSection = () => {
             Profile Suite &amp; Chat War Room
           </h2>
           <p className="mx-auto max-w-2xl text-sm md:text-base text-gray-400 leading-relaxed">
-            First, sharpen how you show up. Then, command every conversation with AI‑backed intelligence.
+            First, sharpen how you show up. Then, command every conversation
+            with AI‑backed intelligence.
           </p>
         </div>
 
@@ -72,8 +81,9 @@ const FeaturesSection = () => {
             </div>
 
             <p className="mb-8 text-sm md:text-base text-gray-300 leading-relaxed">
-              Everything you need to make your profile irresistible—photos, bios, and strategy, all tuned by AI
-              to match the kind of people you actually want.
+              Everything you need to make your profile irresistible—photos,
+              bios, and strategy, all tuned by AI to match the kind of people
+              you actually want.
             </p>
 
             {/* Individual profile tools */}
@@ -145,8 +155,9 @@ const FeaturesSection = () => {
             </div>
 
             <p className="mb-8 text-sm md:text-base text-gray-300 leading-relaxed">
-              Paste any chat and step into a tactical “war room” that breaks down intent, flags risks, and
-              hands you battle‑tested replies you can send instantly.
+              Paste any chat and step into a tactical “war room” that breaks
+              down intent, flags risks, and hands you battle‑tested replies you
+              can send instantly.
             </p>
 
             {/* Characteristics of Chat Analyzer */}
@@ -154,9 +165,12 @@ const FeaturesSection = () => {
               <div className="flex items-start gap-3">
                 <span className="mt-1 h-2 w-2 rounded-full bg-red-500" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-50">Red &amp; Green Flag Radar</p>
+                  <p className="text-sm font-semibold text-slate-50">
+                    Red &amp; Green Flag Radar
+                  </p>
                   <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                    Spot neediness, manipulation, or genuine interest before you reply.
+                    Spot neediness, manipulation, or genuine interest before you
+                    reply.
                   </p>
                 </div>
               </div>
@@ -164,9 +178,12 @@ const FeaturesSection = () => {
               <div className="flex items-start gap-3">
                 <span className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-50">Intent Decoder</p>
+                  <p className="text-sm font-semibold text-slate-50">
+                    Intent Decoder
+                  </p>
                   <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                    Translate vague messages into clear emotional intent and likely next moves.
+                    Translate vague messages into clear emotional intent and
+                    likely next moves.
                   </p>
                 </div>
               </div>
@@ -174,9 +191,12 @@ const FeaturesSection = () => {
               <div className="flex items-start gap-3">
                 <span className="mt-1 h-2 w-2 rounded-full bg-purple-500" />
                 <div>
-                  <p className="text-sm font-semibold text-slate-50">Response Architect</p>
+                  <p className="text-sm font-semibold text-slate-50">
+                    Response Architect
+                  </p>
                   <p className="text-xs md:text-sm text-gray-400 leading-relaxed">
-                    Generate Safe, Bold, or Witty replies that match your style and the situation.
+                    Generate Safe, Bold, or Witty replies that match your style
+                    and the situation.
                   </p>
                 </div>
               </div>

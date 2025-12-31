@@ -1,4 +1,3 @@
-// index.js (entry)
 import express from "express";
 import mongoose from "mongoose";
 import helmet from "helmet";
@@ -11,16 +10,19 @@ import adminRoutes from "./routes/admin.route.js";
 import authRoutes from "./routes/auth.route.js";
 import aiRoutes from "./routes/ai.route.js";
 import paymentRoutes from "./routes/payment.route.js";
+
 import { errorHandler } from "./middleware/errorHandler.js";
 import { protectRoute } from "./middleware/protectRoutes.js";
-import { isAdmin } from "./middleware/isAdmin.js";
 
 const app = express();
 
-const CLIENT_URL = ["http://localhost:8080","https://amour123.netlify.app","https://amour-delta.vercel.app","https://amour-gb3dlao5a-masstamilan555s-projects.vercel.app" ];
- //process.env.CLIENT_URL || "http://localhost:8080";
-// const CLIENT_URL =  "https://wondrous-haupia-3142c3.netlify.app";
- const PORT = process.env.PORT || 4000;
+const CLIENT_URL = [
+  "http://localhost:8080",
+  "https://amour123.netlify.app",
+  "https://amour-delta.vercel.app",
+  "https://amour-gb3dlao5a-masstamilan555s-projects.vercel.app",
+];
+const PORT = process.env.PORT || 4000;
 
 app.use(helmet());
 app.use(
@@ -44,12 +46,12 @@ app.use("/api/ai", protectRoute, aiRoutes);
 app.use("/api/payment", protectRoute, paymentRoutes);
 app.use("/api/admin", protectRoute, adminRoutes);
 
+app.use(errorHandler);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.json({ ok: true, message: "Auth API running" });
 });
 
-app.use(errorHandler);
 
 async function start() {
   try {

@@ -262,21 +262,4 @@ const Signup = () => {
 
 export default Signup;
 
-// Demo Page - Toggle between Login and Signup
-// export default function AuthPage() {
-//   const [showSignup, setShowSignup] = useState(true);
 
-//   return (
-//     <div>
-//       {showSignup ? (
-//         <Signup
-//           onToggleLogin={() => setShowSignup(false)}
-//         />
-//       ) : (
-//         <Login
-//           onToggleSignup={() => setShowSignup(true)}
-//         />
-//       )}
-//     </div>
-//   );
-// }

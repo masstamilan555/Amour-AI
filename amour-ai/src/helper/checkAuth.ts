@@ -8,7 +8,7 @@ import axios from "axios";
         setUser(null);
         return;
       }
-      setUser(res.data?.data); // <-- consistent shape
+      setUser(res.data?.data);
     } catch (err) {
       setUser(null);
     }

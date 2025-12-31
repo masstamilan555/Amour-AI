@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const { toast } = useToast();
-  // Example login function (would typically call an API)
   const signUpApp = async (data) => {
     // Await API call, get user data and token
     // const response = await axios.post('/api/signup', data);

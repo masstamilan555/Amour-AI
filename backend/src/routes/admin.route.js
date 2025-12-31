@@ -1,7 +1,6 @@
 import express from "express";
 import { createInfluencer, listInfluencers, payNow } from "../controllers/admin.controller.js";
 import { isAdmin } from "../middleware/isAdmin.js";
-// import { isAdmin } from "../middleware/isAdmin.js"; // create this
 
 const router = express.Router();
 

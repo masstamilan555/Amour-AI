@@ -20,7 +20,6 @@ import { analyzeDp } from "@/services/ai";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-
 // ---------------------------------------------------------
 // Logic: Image Compression Utility (Unchanged)
 // ---------------------------------------------------------
@@ -206,8 +205,8 @@ const DpAnalyzer = () => {
             Profile Picture Audit
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            First impressions happen in milliseconds. Upload your photo to get an
-            objective, AI-powered analysis.
+            First impressions happen in milliseconds. Upload your photo to get
+            an objective, AI-powered analysis.
           </p>
         </div>
 
@@ -319,63 +318,78 @@ const DpAnalyzer = () => {
                       </div>
                       <div className="h-20 w-20 rounded-full border-4 border-white/20 flex items-center justify-center backdrop-blur-sm bg-white/10">
                         <span className="text-2xl">
-                          {result.score >= 7 ? "✨" : result.score >= 5 ? "👍" : "🤔"}
+                          {result.score >= 7
+                            ? "✨"
+                            : result.score >= 5
+                            ? "👍"
+                            : "🤔"}
                         </span>
                       </div>
                     </div>
                     <p className="text-sm text-primary-foreground/70">
-                      Person Confidence: <span className="font-semibold">{result.person_confidence}/10</span>
+                      Person Confidence:{" "}
+                      <span className="font-semibold">
+                        {result.person_confidence}/10
+                      </span>
                     </p>
                   </CardContent>
                 </Card>
 
                 {/* Subscores Grid */}
                 <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(result.subscores).map(([category, score]: [string, number]) => (
-                    <Card key={category} className="border-none bg-card/80 hover:bg-card transition-colors">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm font-medium capitalize text-muted-foreground">
-                            {category}
-                          </p>
-                          <span className="text-lg font-bold text-primary">{score}/10</span>
-                        </div>
-                        <div className="w-full bg-muted rounded-full h-2">
-                          <div
-                            className="bg-gradient-to-r from-primary to-blue-500 h-2 rounded-full transition-all duration-500"
-                            style={{ width: `${score * 10}%` }}
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                  {Object.entries(result.subscores).map(
+                    ([category, score]: [string, number]) => (
+                      <Card
+                        key={category}
+                        className="border-none bg-card/80 hover:bg-card transition-colors"
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-medium capitalize text-muted-foreground">
+                              {category}
+                            </p>
+                            <span className="text-lg font-bold text-primary">
+                              {score}/10
+                            </span>
+                          </div>
+                          <div className="w-full bg-muted rounded-full h-2">
+                            <div
+                              className="bg-gradient-to-r from-primary to-blue-500 h-2 rounded-full transition-all duration-500"
+                              style={{ width: `${score * 10}%` }}
+                            />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  )}
                 </div>
 
                 {/* Priority Issues */}
-                {result.priority_issues && result.priority_issues.length > 0 && (
-                  <Card className="border-l-4 border-l-red-500 bg-red-500/5">
-                    <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg flex items-center mb-4 text-foreground">
-                        <Zap className="w-5 h-5 text-red-500 mr-2" />
-                        Priority Issues
-                      </h3>
-                      <div className="space-y-4">
-                        {result.priority_issues.map((issue, i) => (
-                          <div key={i} className="space-y-2">
-                            <p className="text-sm font-medium text-foreground capitalize">
-                              • {issue}
-                            </p>
-                            {result.explainers && result.explainers[i] && (
-                              <p className="text-xs text-muted-foreground ml-4 italic">
-                                {result.explainers[i]}
+                {result.priority_issues &&
+                  result.priority_issues.length > 0 && (
+                    <Card className="border-l-4 border-l-red-500 bg-red-500/5">
+                      <CardContent className="p-6">
+                        <h3 className="font-semibold text-lg flex items-center mb-4 text-foreground">
+                          <Zap className="w-5 h-5 text-red-500 mr-2" />
+                          Priority Issues
+                        </h3>
+                        <div className="space-y-4">
+                          {result.priority_issues.map((issue, i) => (
+                            <div key={i} className="space-y-2">
+                              <p className="text-sm font-medium text-foreground capitalize">
+                                • {issue}
                               </p>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
+                              {result.explainers && result.explainers[i] && (
+                                <p className="text-xs text-muted-foreground ml-4 italic">
+                                  {result.explainers[i]}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
 
                 {/* Quick Tips */}
                 {result.quick_tips && result.quick_tips.length > 0 && (
@@ -387,8 +401,13 @@ const DpAnalyzer = () => {
                       </h3>
                       <ul className="space-y-2">
                         {result.quick_tips.map((tip, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex items-start">
-                            <span className="mr-2 text-yellow-500 font-bold">→</span>
+                          <li
+                            key={i}
+                            className="text-sm text-muted-foreground flex items-start"
+                          >
+                            <span className="mr-2 text-yellow-500 font-bold">
+                              →
+                            </span>
                             {tip}
                           </li>
                         ))}
@@ -407,7 +426,10 @@ const DpAnalyzer = () => {
                       </h3>
                       <ul className="space-y-3">
                         {result.suggestions.map((suggestion, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex gap-3">
+                          <li
+                            key={i}
+                            className="text-sm text-muted-foreground flex gap-3"
+                          >
                             <span className="text-blue-500 font-bold mt-0.5 flex-shrink-0">
                               {i + 1}.
                             </span>
@@ -429,8 +451,13 @@ const DpAnalyzer = () => {
                       </h3>
                       <ul className="space-y-2">
                         {result.pros.map((pro, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex items-start">
-                            <span className="mr-3 text-green-500 font-bold">✓</span>
+                          <li
+                            key={i}
+                            className="text-sm text-muted-foreground flex items-start"
+                          >
+                            <span className="mr-3 text-green-500 font-bold">
+                              ✓
+                            </span>
                             {pro}
                           </li>
                         ))}
@@ -449,7 +476,10 @@ const DpAnalyzer = () => {
                       </h3>
                       <ul className="space-y-2">
                         {result.cons.map((con, i) => (
-                          <li key={i} className="text-sm text-muted-foreground flex items-start">
+                          <li
+                            key={i}
+                            className="text-sm text-muted-foreground flex items-start"
+                          >
                             <span className="mr-3 text-amber-500">•</span>
                             {con}
                           </li>
@@ -495,7 +525,6 @@ const DpAnalyzer = () => {
       </div>
     </div>
   );
-
 };
 
 export default DpAnalyzer;

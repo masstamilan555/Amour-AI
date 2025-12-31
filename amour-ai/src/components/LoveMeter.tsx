@@ -40,7 +40,9 @@ export default function LoveMeter({ value = 50 }) {
   };
 
   const heartClass = (level) =>
-    displayValue >= level ? "text-red-500 fill-red-500 scale-110" : "text-gray-300";
+    displayValue >= level
+      ? "text-red-500 fill-red-500 scale-110"
+      : "text-gray-300";
 
   const heartLevels = [100, 75, 50, 25, 0];
 
@@ -69,7 +71,9 @@ export default function LoveMeter({ value = 50 }) {
 
             {/* fill */}
             <div
-              className={`absolute left-0 right-0 bottom-0 m-1 rounded-b-3xl ${value<92?'rounded-t-lg':'rounded-t-3xl'} wave-flow wave-bobing bg-gradient-to-t ${getColor(
+              className={`absolute left-0 right-0 bottom-0 m-1 rounded-b-3xl ${
+                value < 92 ? "rounded-t-lg" : "rounded-t-3xl"
+              } wave-flow wave-bobing bg-gradient-to-t ${getColor(
                 displayValue
               )}`}
               style={{
