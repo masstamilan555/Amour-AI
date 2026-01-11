@@ -1,16 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowRight, Lock, Sparkles, Zap, Phone, Shield } from "lucide-react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../context/AuthContext";
 
-// Signup Component
 const Signup = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [username, setUsername] = useState("");
   const [otpSent, setOtpSent] = useState(false);
+  const [searchParams] = useSearchParams();
+  const ref = searchParams.get("ref");
+  
 
   // Separate loading states
   const [sendingOtp, setSendingOtp] = useState(false);
@@ -112,7 +114,7 @@ const Signup = () => {
     }
 
     setSigningUp(true);
-    await signUpApp({ username, phone, otp });
+    await signUpApp({ username, phone, otp,ref });
     setSigningUp(false);
   };
 
@@ -152,7 +154,7 @@ const Signup = () => {
               </label>
               <input
                 type="text"
-                placeholder="Choose your battle name"
+                placeholder="How can we call You?"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-orange-500/50 focus:bg-white/10 transition-all duration-300"
@@ -261,5 +263,3 @@ const Signup = () => {
 };
 
 export default Signup;
-
-

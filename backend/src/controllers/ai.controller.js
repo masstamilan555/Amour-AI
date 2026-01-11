@@ -1,9 +1,11 @@
-// Import necessary modules
 import fs from "fs/promises";
 import axios from "axios";
-import User from "../models/user.model.js";
 import mongoose from "mongoose";
+import User from "../models/user.model.js"; // keep your model path
 
+// -----------------------------
+// System prompts
+// -----------------------------
 const CHAT_SYSTEM_PROMPT = `
 You are an expert dating coach, behavioral analyst, conversational UX specialist, and short-message copywriter. You will receive a chat conversation (screenshot image OR plain text). Your job is to analyze the conversation and PRODUCE EXACTLY ONE JSON OBJECT that follows the schema and validation rules below. NOTHING else — no commentary, no markdown, no code fences, no extra fields.
 
@@ -321,12 +323,15 @@ ERROR HANDLING
 Return only the JSON object (no markdown, no extra text). End of prompt.
 `;
 
+// -----------------------------
+// Credits deduction helper
+// -----------------------------
 export async function deductCredits(userId, amount) {
   if (!Number.isInteger(amount) || amount <= 0) {
     throw new TypeError("amount must be a positive integer (credits)");
   }
 
-  const id = new mongoose.Types.ObjectId(userId); // normalize; optional
+  const id = new mongoose.Types.ObjectId(userId);
   const updatedUser = await User.findOneAndUpdate(
     { _id: id, credits: { $gte: amount } },
     { $inc: { credits: -amount } },
@@ -342,42 +347,164 @@ export async function deductCredits(userId, amount) {
   throw new Error("unknown");
 }
 
-async function callGroq(prompt, userContent, apiKey) {
-  const key = apiKey || process.env.GROQ_API_KEY;
-  if (!key) throw new Error("GROQ_API_KEY not configured on server.");
+// -----------------------------
+// GROQ Key Rotation Implementation
+// -----------------------------
+// Configure via env: GROQ_API_KEYS="freeKey1,freeKey2,freeKey3,paidKey"
+const GROQ_API_KEYS = (process.env.GROQ_API_KEYS || "")
+  .split(",")
+  .map((k) => k.trim())
+  .filter(Boolean);
 
-  try {
-    const body = {
-      model: "llama-3.3-70b-versatile",
-      messages: [
-        { role: "system", content: prompt },
-        { role: "user", content: userContent },
-      ],
-      temperature: 0.7,
-    };
+// in-memory per-key cooldown until timestamp (ms).
+const keyCooldowns = new Map();
+const DEFAULT_COOLDOWN_MS = 30 * 1000; // 30 seconds; tune as needed
 
-    const resp = await axios.post(
-      "https://api.groq.com/openai/v1/chat/completions",
-      body,
-      {
+function isKeyOnCooldown(key) {
+  const until = keyCooldowns.get(key);
+  return !!until && Date.now() < until;
+}
+function setKeyCooldown(key, ms = DEFAULT_COOLDOWN_MS) {
+  keyCooldowns.set(key, Date.now() + ms);
+}
+function clearKeyCooldown(key) {
+  keyCooldowns.delete(key);
+}
+
+// Determine if error is retryable (rate limit, quota, auth)
+function isRetryableGroqError(err) {
+  if (!err || !err.response) return false;
+  const status = err.response.status;
+  const data = err.response.data || "";
+  if (status === 429) return true; // rate limit
+  if (status === 401 || status === 403 || status === 402) return true; // auth/quota style
+  const txt = JSON.stringify(data).toLowerCase();
+  if (
+    txt.includes("quota") ||
+    txt.includes("rate limit") ||
+    txt.includes("exceeded")
+  )
+    return true;
+  return false;
+}
+
+// Iterate keys in order and post until success
+async function postToGroqWithKeyRotation(url, body, axiosOptions = {}) {
+  if (!GROQ_API_KEYS.length) {
+    throw new Error("GROQ_API_KEYS not configured");
+  }
+  
+
+  let lastError = null;
+
+  // iterate through keys in configured order (free keys first)
+  for (const key of GROQ_API_KEYS) {
+    if (isKeyOnCooldown(key)) {
+      // skip cooling keys
+      continue;
+    }
+   
+
+    try {
+      const resp = await axios.post(url, body, {
+        ...axiosOptions,
         headers: {
           Authorization: `Bearer ${key}`,
           "Content-Type": "application/json",
+          ...(axiosOptions.headers || {}),
         },
+        maxBodyLength: axiosOptions.maxBodyLength ?? Infinity,
+      });
+
+      // success: clear cooldown if any and return
+      clearKeyCooldown(key);
+      return resp;
+    } catch (err) {
+      lastError = err;
+
+      if (isRetryableGroqError(err)) {
+        // choose cooldown length based on status 
+        let ms = DEFAULT_COOLDOWN_MS;
+        const status = err.response?.status;
+        if (status === 429) ms = DEFAULT_COOLDOWN_MS; // 60s
+        if (status === 401 || status === 403 || status === 402)
+          ms = DEFAULT_COOLDOWN_MS * 5; 
+        setKeyCooldown(key, ms);
+        // continue to next key
+        continue;
+      }
+
+      // Non-retryable error
+      throw err;
+    }
+  }
+
+  // All keys exhausted / on cooldown or produced retryable failures
+  if (lastError) throw lastError;
+  throw new Error("no_available_groq_keys");
+}
+
+// callGroq: uses key rotation
+async function callGroq(prompt, userContent, apiKeyOverride) {
+
+  if (!prompt) throw new Error("prompt_required");
+  // build body similar to earlier implementation
+  const body = {
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      { role: "system", content: prompt },
+      { role: "user", content: userContent },
+    ],
+    temperature: 0.7,
+  };
+
+  // If explicit override key provided, try it first (useful for tests)
+  if (apiKeyOverride) {
+    try {
+      const resp = await axios.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKeyOverride}`,
+            "Content-Type": "application/json",
+          },
+          maxBodyLength: Infinity,
+        }
+      );
+      const content = resp.data?.choices?.[0]?.message?.content;
+      if (!content) throw new Error("Empty response from Groq API");
+      let text = content.trim();
+      if (text.startsWith("```json")) text = text.replace(/^```json\s*/, "");
+      else if (text.startsWith("```")) text = text.replace(/^```\s*/, "");
+      if (text.endsWith("```")) text = text.replace(/```\s*$/, "");
+      return JSON.parse(text);
+    } catch (err) {
+      // If error is retryable, fall through to rotation; otherwise rethrow
+      if (!isRetryableGroqError(err)) {
+        if (err.response) {
+          const { status, statusText, data } = err.response;
+          throw new Error(
+            `Groq API Error: ${status} ${statusText} - ${JSON.stringify(data)}`
+          );
+        }
+        throw err;
+      }
+      // else continue to key rotation
+    }
+  }
+
+  // Use rotation helper
+  let resp;
+  try {
+    resp = await postToGroqWithKeyRotation(
+      "https://api.groq.com/openai/v1/chat/completions",
+      body,
+      {
+        maxBodyLength: Infinity,
       }
     );
-
-    const content = resp.data?.choices?.[0]?.message?.content;
-    if (!content) throw new Error("Empty response from Groq API");
-
-    let text = content.trim();
-    if (text.startsWith("```json")) text = text.replace(/^```json\s*/, "");
-    else if (text.startsWith("```")) text = text.replace(/^```\s*/, "");
-    if (text.endsWith("```")) text = text.replace(/```\s*$/, "");
-
-    return JSON.parse(text);
   } catch (err) {
-    // normalize axios error to useful message
     if (err.response) {
       const { status, statusText, data } = err.response;
       throw new Error(
@@ -386,24 +513,34 @@ async function callGroq(prompt, userContent, apiKey) {
     }
     throw err;
   }
+
+  const content = resp.data?.choices?.[0]?.message?.content;
+  if (!content) throw new Error("Empty response from Groq API");
+  let text = content.trim();
+  if (text.startsWith("```json")) text = text.replace(/^```json\s*/, "");
+  else if (text.startsWith("```")) text = text.replace(/^```\s*/, "");
+  if (text.endsWith("```")) text = text.replace(/```\s*$/, "");
+  return JSON.parse(text);
 }
 
+// Route handlers - adapted to use rotation functions
 export const analyzeProfileImage = async (req, res, next) => {
   try {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey)
+    if (!GROQ_API_KEYS.length) {
       return res.status(500).json({ ok: false, error: "server_misconfigured" });
+    }
 
     let dataUrl;
     if (req.user.credits < 4) {
       return res.status(402).json({ ok: false, error: "insufficient_credits" });
     }
-    // Option 1: JSON body with base64 data URL
+
+    // JSON body with base64 data URL
     if (req.body?.base64Image && typeof req.body.base64Image === "string") {
       dataUrl = req.body.base64Image;
     }
 
-    // Option 2: multipart form upload (multer)
+    // multipart form upload (multer)
     if (!dataUrl && req.file) {
       const buf = req.file.buffer || (await fs.readFile(req.file.path));
       const mime = req.file.mimetype || "image/jpeg";
@@ -414,8 +551,6 @@ export const analyzeProfileImage = async (req, res, next) => {
     if (!dataUrl)
       return res.status(400).json({ ok: false, error: "image_required" });
 
-    // NOTE: many vision endpoints prefer a publicly-accessible URL (not huge base64 payloads).
-    // This endpoint follows your original pattern: send image as an image_url item with the data URL.
     const body = {
       model: "meta-llama/llama-4-scout-17b-16e-instruct",
       messages: [
@@ -431,26 +566,35 @@ export const analyzeProfileImage = async (req, res, next) => {
       temperature: 0.2,
     };
 
-    const resp = await axios.post(
-      "https://api.groq.com/openai/v1/chat/completions",
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        maxBodyLength: Infinity, // important for large base64 payloads
+    // Use rotating keys to call Groq
+    let resp;
+    try {
+      resp = await postToGroqWithKeyRotation(
+        "https://api.groq.com/openai/v1/chat/completions",
+        body,
+        { maxBodyLength: Infinity }
+      );
+    } catch (err) {
+      if (err.response) {
+        const { status, statusText, data } = err.response;
+        return next(
+          new Error(
+            `Groq API Error: ${status} ${statusText} - ${JSON.stringify(data)}`
+          )
+        );
       }
-    );
+      return next(err);
+    }
 
     let content = resp.data?.choices?.[0]?.message?.content;
     if (!content)
       return res
         .status(500)
         .json({ ok: false, error: "empty_vision_response" });
+
+    // Deduct credits after successful response
     try {
-      const updatedUser = await deductCredits(req.user._id, 4);
-      // continue, updatedUser has credits
+      await deductCredits(req.user._id, 4);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -471,6 +615,15 @@ export const analyzeProfileImage = async (req, res, next) => {
     const parsed = JSON.parse(content);
     return res.json({ ok: true, result: parsed });
   } catch (err) {
+    // normalize axios error to useful message if possible
+    if (err.response) {
+      const { status, statusText, data } = err.response;
+      return next(
+        new Error(
+          `Groq API Error: ${status} ${statusText} - ${JSON.stringify(data)}`
+        )
+      );
+    }
     next(err);
   }
 };
@@ -487,10 +640,23 @@ export const generateBios = async (req, res, next) => {
       return res.status(402).json({ ok: false, error: "insufficient_credits" });
     }
     const userContent = `Hobbies: ${hobbies}\nVibe/Personality: ${vibe}\nJob/Career: ${job}\n\nWrite 3 bios for this person.`;
-    const result = await callGroq(BIO_SYSTEM_PROMPT, userContent);
+
+    let result;
     try {
-      const updatedUser = await deductCredits(req.user._id, 1);
-      // continue, updatedUser has credits
+      result = await callGroq(BIO_SYSTEM_PROMPT, userContent);
+    } catch (err) {
+      // Normalize axios error similar to existing behavior
+      if (err.response) {
+        const { status, statusText, data } = err.response;
+        throw new Error(
+          `Groq API Error: ${status} ${statusText} - ${JSON.stringify(data)}`
+        );
+      }
+      throw err;
+    }
+
+    try {
+      await deductCredits(req.user._id, 1);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -515,10 +681,22 @@ export const analyzeChat = async (req, res, next) => {
     if (req.user.credits < 1) {
       return res.status(402).json({ ok: false, error: "insufficient_credits" });
     }
-    const result = await callGroq(CHAT_SYSTEM_PROMPT, chatText);
+
+    let result;
     try {
-      const updatedUser = await deductCredits(req.user._id, 1);
-      // continue, updatedUser has credits
+      result = await callGroq(CHAT_SYSTEM_PROMPT, chatText);
+    } catch (err) {
+      if (err.response) {
+        const { status, statusText, data } = err.response;
+        throw new Error(
+          `Groq API Error: ${status} ${statusText} - ${JSON.stringify(data)}`
+        );
+      }
+      throw err;
+    }
+
+    try {
+      await deductCredits(req.user._id, 1);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -536,9 +714,9 @@ export const analyzeChat = async (req, res, next) => {
 
 export const analyzeChatImage = async (req, res, next) => {
   try {
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey)
+    if (!GROQ_API_KEYS.length) {
       return res.status(500).json({ ok: false, error: "server_misconfigured" });
+    }
 
     let dataUrl;
 
@@ -546,12 +724,12 @@ export const analyzeChatImage = async (req, res, next) => {
       return res.status(402).json({ ok: false, error: "insufficient_credits" });
     }
 
-    // Option 1: JSON body with base64 data URL
+    // JSON body with base64 data URL
     if (req.body?.base64Image && typeof req.body.base64Image === "string") {
       dataUrl = req.body.base64Image;
     }
 
-    // Option 2: multipart form upload (multer)
+    // multipart form upload (multer)
     if (!dataUrl && req.file) {
       const buf = req.file.buffer || (await fs.readFile(req.file.path));
       const mime = req.file.mimetype || "image/jpeg";
@@ -581,17 +759,24 @@ export const analyzeChatImage = async (req, res, next) => {
       temperature: 0.2,
     };
 
-    const resp = await axios.post(
-      "https://api.groq.com/openai/v1/chat/completions",
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-        maxBodyLength: Infinity,
+    let resp;
+    try {
+      resp = await postToGroqWithKeyRotation(
+        "https://api.groq.com/openai/v1/chat/completions",
+        body,
+        { maxBodyLength: Infinity }
+      );
+    } catch (err) {
+      if (err.response) {
+        const { status, statusText, data } = err.response;
+        return next(
+          new Error(
+            `Groq API Error: ${status} ${statusText} - ${JSON.stringify(data)}`
+          )
+        );
       }
-    );
+      return next(err);
+    }
 
     let content = resp.data?.choices?.[0]?.message?.content;
     if (!content)
@@ -600,8 +785,7 @@ export const analyzeChatImage = async (req, res, next) => {
         .json({ ok: false, error: "empty_vision_response" });
 
     try {
-      const updatedUser = await deductCredits(req.user._id, 4);
-      // continue, updatedUser has credits
+      await deductCredits(req.user._id, 4);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -611,6 +795,7 @@ export const analyzeChatImage = async (req, res, next) => {
         return res.status(404).json({ ok: false, error: "user_not_found" });
       return next(err);
     }
+
     content = content.trim();
     if (content.startsWith("```json"))
       content = content.replace(/^```json\s*/, "");
@@ -621,7 +806,6 @@ export const analyzeChatImage = async (req, res, next) => {
     const parsed = JSON.parse(content);
     return res.json({ ok: true, result: parsed });
   } catch (err) {
-    // normalize axios error like you already do in callGroq
     if (err.response) {
       const { status, statusText, data } = err.response;
       return next(

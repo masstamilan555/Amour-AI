@@ -6,11 +6,9 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-
   const { toast } = useToast();
+
   const signUpApp = async (data) => {
-    // Await API call, get user data and token
-    // const response = await axios.post('/api/signup', data);
     try {
       const res = await axios.post("/api/auth/signup", data);
 
@@ -39,12 +37,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loginApp = async (data) => {
-    // Await API call, get user data and token
-    // const response = await axios.post('/api/login', data);
     try {
-      console.log(data)
+      console.log(data);
       const res = await axios.post("/api/auth/login", data);
-      
+
       if (res.status === 404 || !res.data?.ok) {
         throw new Error(res.data?.error || "Login failed");
       }
@@ -66,25 +62,27 @@ export const AuthProvider = ({ children }) => {
       console.error("Login failed", err);
     }
   };
+
   const logOutApp = () => {
     setUser(null);
   };
   const fetchUser = async () => {
     try {
       const res = await axios.get("/api/auth/me");
-      // with proxy you can omit host
       if (res.status !== 200 || !res.data.ok) {
         setUser(null);
         return;
       }
-      setUser(res.data?.data); // <-- consistent shape
+      setUser(res.data?.data);
     } catch (err) {
       setUser(null);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loginApp, logOutApp, fetchUser, signUpApp }}>
+    <AuthContext.Provider
+      value={{ user, loginApp, logOutApp, fetchUser, signUpApp }}
+    >
       {children}
     </AuthContext.Provider>
   );

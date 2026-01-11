@@ -44,12 +44,9 @@ export const createInfluencer = async (req, res, next) => {
  */
 export const listInfluencers = async (req, res, next) => {
   try {
-    const { page = 1, limit = 50, q } = req.query;
+    const { page = 1, limit = 50 } = req.query;
     const filter = {};
-    if (q) {
-      const re = new RegExp(q, "i");
-      filter.$or = [{ name: re }, { contact: re }, { _id: q }];
-    }
+    
     const skip = (page - 1) * limit;
     const [items, total] = await Promise.all([
       Influencer.find(filter)

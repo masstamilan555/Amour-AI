@@ -28,14 +28,10 @@ app.use(helmet());
 app.use(
   cors({
     origin: CLIENT_URL,
-    credentials: true, // <-- allow cookies
+    credentials: true, // allow cookies
   })
 );
-// app.use(
-//   cors({
-//     origin: '*',
-//   })
-// );
+
 
 app.use(express.json({ limit: "12mb" }));
 app.use(express.urlencoded({ extended: true, limit: "12mb" }));

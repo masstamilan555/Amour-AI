@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 export const protectRoute = async (req, res, next) => {
-  //next is to call the next routes
   try {
     const token = req.cookies["amour"];
 
@@ -23,7 +22,7 @@ export const protectRoute = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
     req.user = user;
-    next(); //this is to call the next routes
+    next(); // call the next routes
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "internal server error" });

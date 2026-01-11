@@ -1,4 +1,3 @@
-// Login Component
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import { ArrowRight, Lock, Sparkles, Zap, Phone, Shield } from "lucide-react";

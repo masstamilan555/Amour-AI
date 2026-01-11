@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  ShieldCheck,
   Zap,
   ArrowRight,
   Lock,
@@ -9,7 +8,6 @@ import {
 } from "lucide-react";
 import heroBg from "@/assets/hero-bg-romantic1.jpg";
 import { useNavigate } from "react-router-dom";
-import { text } from "stream/consumers";
 import { useAuth } from "@/context/AuthContext";
 
 const HeroSection = () => {
@@ -35,18 +33,11 @@ const HeroSection = () => {
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-5xl mx-auto px-6 flex flex-col items-center text-center">
         {/* Headline */}
-        {/* <h1 className="animate-in fade-in zoom-in duration-700 delay-100 text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white mb-8 leading-[1.1] drop-shadow-2xl">
-            💕Don't Just Match. <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-br from-orange-200 via-orange-400 to-red-600">
-              Dominate the Game.
-            </span>
-          </h1> */}
         <h1 className="hero-title pb-6 ">
           💕 Your Profile, <span className="text-red">Perfected.</span>
           <br />
           <span className="text-accent ">Find Your Match Faster.</span>
         </h1>
-
         {/* Subheadline */}
         <p className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200 text-lg md:text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light mb-12">
           Stop relying on luck. Use Amour AI to analyze your chats, optimize
@@ -55,7 +46,6 @@ const HeroSection = () => {
             Your personal dating war room is ready.
           </span>
         </p>
-
         {user ? (
           <div>
             <p className="animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 text-lg md:text-2xl text-orange-400 max-w-3xl mx-auto leading-relaxed font-medium mb-12">

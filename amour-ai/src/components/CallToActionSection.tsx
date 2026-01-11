@@ -87,20 +87,20 @@ const Footer = () => {
 
           {/* Links Column 1 */}
           <div className="md:col-span-2 md:col-start-7">
-            <h4 className="font-semibold text-white mb-8 text-lg">Platform</h4>
+            <h4 className="font-semibold text-white mb-8 text-lg">Services</h4>
             <ul className="space-y-6">
               {[
-                "Profile Suite",
-                "Chat War Room",
-                "Photo Analyzer",
-                "Pricing",
+                { name: "Profile Suite", href: "#features" },
+                { name: "Chat War Room", href: "#features" },
+                { name: "Photo Analyzer", href: "#features" },
+                { name: "Pricing", href: "#pricing" },
               ].map((item) => (
-                <li key={item}>
+                <li key={item.name}>
                   <a
-                    href="#"
+                    href={item.href}  
                     className="text-gray-500 hover:text-white transition-colors text-sm font-medium flex items-center group"
                   >
-                    {item}
+                    {item.name}
                     <ArrowUpRight className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                   </a>
                 </li>
@@ -110,7 +110,7 @@ const Footer = () => {
 
           {/* Socials Column */}
           <div className="md:col-span-2">
-            <h4 className="font-semibold text-white mb-8 text-lg">Connect</h4>
+            <h4 className="font-semibold text-white mb-8 text-lg">Connect with Us</h4>
             <div className="flex gap-4">
               {[Twitter, Instagram, Github, Mail].map((Icon, i) => (
                 <a
@@ -127,7 +127,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-gray-600 font-medium uppercase tracking-wide">
-          <p>© 2025 Amour AI Inc.</p>
+          <p>© {new Date().getFullYear()} Amour AI Inc.</p>
           <div className="flex gap-8">
             <a href="#" className="hover:text-gray-400 transition-colors">
               Privacy

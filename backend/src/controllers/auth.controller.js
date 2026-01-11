@@ -1,11 +1,13 @@
 import { sendOtp, verifyOtp } from "../services/twilio.service.js";
 import { normalizeAndValidatePhone } from "../utils/phoneNormalize.js";
 import User from "../models/user.model.js";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../utils/generateToken.js";
+import influencerModel from "../models/influencer.model.js";
 
 export const signupController = async (req, res, next) => {
   try {
-    const { username, phone, otp } = req.body;
+    const { username, phone, otp ,ref } = req.body;
+    
     if (!username || !phone || !otp) {
       return res
         .status(400)
@@ -29,20 +31,22 @@ export const signupController = async (req, res, next) => {
       createdAt: now,
       lastLoginAt: now,
     });
-    const token = jwt.sign(
-      { sub: user._id.toString() },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "15d",
-      }
-    );
 
-    /// in routes/auth.route.js — used for both signup and login
+    if (ref) {
+      // Handle referral logic here
+      const referrer = await influencerModel.findOne({ referalLink: ref });
+      if (referrer) {
+        referrer.referralCount += 1;
+        await referrer.save();
+      }
+    }
+
+    const token = generateToken(user, res);
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // true only in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 15 * 24 * 60 * 60 * 1000, // 15d
+      maxAge: 90 * 24 * 60 * 60 * 1000,
       path: "/",
     };
     res.cookie("amour", token, cookieOptions);
@@ -75,24 +79,17 @@ export const loginController = async (req, res, next) => {
       return res.status(404).json({ ok: false, error: "user_not_found" });
     }
 
-    // const result = await verifyOtp(normalized, otp);
-    // if (result.status !== "approved") {
-    //   return res.status(400).json({ ok: false, error: "invalid_otp" });
-    // }
-    const token = jwt.sign(
-      { sub: user._id.toString() },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "15d",
-      }
-    );
+    const result = await verifyOtp(normalized, otp);
+    if (result.status !== "approved") {
+      return res.status(400).json({ ok: false, error: "invalid_otp" });
+    }
 
-    // in routes/auth.route.js — used for both signup and login
+    const token = generateToken(user, res);
     const cookieOptions = {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // true only in prod
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 15 * 24 * 60 * 60 * 1000, // 15d
+      maxAge: 90 * 24 * 60 * 60 * 1000,
       path: "/",
     };
     res.cookie("amour", token, cookieOptions);
@@ -104,7 +101,6 @@ export const loginController = async (req, res, next) => {
         username: user.username,
         phone: user.phone,
         phoneVerified: user.phoneVerified,
-        token: token,
       },
     });
   } catch (err) {
@@ -128,7 +124,6 @@ export const sendOtpController = async (req, res, next) => {
       await sendOtp(normalized); // your existing Twilio wrapper
       return res.status(200).json({ ok: true, data: { message: "otp_sent" } });
     } catch (twErr) {
-      // Twilio returned an error — map it to a client-friendly response
       console.warn("Twilio sendOtp error", twErr?.message || twErr);
       const status = twErr?.status || 502;
       const code = twErr?.code || "sms_provider_error";
@@ -146,7 +141,7 @@ export const sendOtpController = async (req, res, next) => {
 
 export const logoutController = (_, res) => {
   res.clearCookie("amour", { path: "/" });
-  res.json({ ok: true });
+  res.json({ ok: true, message: "logged out" });
 };
 
 export const getMeController = (req, res) => {
@@ -158,6 +153,7 @@ export const getMeController = (req, res) => {
       phone: req.user.phone,
       phoneVerified: req.user.phoneVerified,
       credits: req.user.credits,
+      adminAccess: req.user.adminAccess,
     },
   });
 };

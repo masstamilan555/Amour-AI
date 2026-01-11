@@ -4,7 +4,6 @@ import { Heart } from "lucide-react";
 export default function LoveMeter({ value = 50 }) {
   const clamp = (v) => Math.max(0, Math.min(100, v));
 
-  // TUNABLE: change these to adjust delay/speed
   const ANIMATION_DELAY_MS = 1200; // wait before starting the visible animation
   const ANIMATION_DURATION_MS = 3000; // how slow the fill animates
   const HEART_TRANSITION_MS = 1000; // hearts scale/color transition duration
@@ -50,7 +49,7 @@ export default function LoveMeter({ value = 50 }) {
     <div className="max-w-sm w-full bg-card/50 p-5 rounded-2xl shadow-lg pb-4 overflow-visible">
       <div className="text-center mb-4">
         <p className="text-3xl font-bold text-rose-200">
-          {displayValue}% <span className="text-rose-400">Love</span>
+          {displayValue}% <span className="text-rose-400">Interest</span>
         </p>
       </div>
 

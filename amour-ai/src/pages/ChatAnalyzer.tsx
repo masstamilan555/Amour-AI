@@ -64,7 +64,6 @@ const ChatAnalyzer = () => {
     return data.result ?? data;
   };
 
-  // inside component
   const handleAnalyzeText = async () => {
     if (!input.trim()) {
       toast({
@@ -202,7 +201,7 @@ const ChatAnalyzer = () => {
               </div>
               <Button
                 variant="outline"
-                className="ml-2 md:py-3 text-md bg-primary/70"
+                className="ml-2 md:py-3 text-md bg-orange-700"
                 onClick={() => navigate("/buy-credits")}
               >
                 Buy Credits
@@ -414,27 +413,9 @@ const ChatAnalyzer = () => {
                       <CardContent>
                         <div className="space-y-4">
                           {/* overall score */}
-
-                          {/* love meter
-                          <div>
-                            <div className="flex items-center justify-between">
-                              <div className="text-sm text-muted-foreground">Love Meter</div>
-                              <div className="text-lg font-semibold">{safeGet(result.love_meter, "--")}%</div>
-                            </div>
-                            <div className="w-full bg-muted/20 rounded-full h-2 mt-2 overflow-hidden">
-                              <div
-                                style={{
-                                  width: `${safeGet(result.love_meter, 0)}%`,
-                                }}
-                                className="h-2 bg-pink-500"
-                              />
-                            </div>
-                          </div> */}
                           <LoveMeter
                             value={result?.love_meter ?? 0}
-                            // value={60}
                           />
-
                           {/* subscores */}
                           <div>
                             <div className="text-sm text-muted-foreground mb-2">
@@ -968,42 +949,3 @@ const ChatAnalyzer = () => {
 };
 
 export default ChatAnalyzer;
-
-// const LoveGauge = ({ value }) => {
-//   // Value should be between 0 and 100
-//   return (
-//     <GaugeComponent
-//       arc={{
-//     subArcs: [
-//       {
-//         limit: 20,
-//         color: '#E91E63',
-//         showTick: true
-//       },
-//       {
-//         limit: 40,
-//         color: '#E91E63',
-//         showTick: true
-//       },
-//       {
-//         limit: 60,
-//         color: '#F5CD19',
-//         showTick: true
-//       },
-//       {
-//         limit: 100,
-//         color: '#5BE12C',
-//         showTick: true
-//       },
-
-//     ]
-
-//   }
-// }
-//   value={50}
-
-//   />
-// );
-// };
-
-// { color: '#E91E63' }

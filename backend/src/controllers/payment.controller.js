@@ -1,6 +1,19 @@
 import crypto from "crypto";
-import { razorpay, RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } from "../config/razorPay.js";
+import {
+  razorpay,
+  RAZORPAY_KEY_ID,
+  RAZORPAY_KEY_SECRET,
+} from "../config/razorPay.js";
 import User from "../models/user.model.js";
+
+const PRICING = {
+  49: 12,
+  149: 35,
+  299: 70,
+  199: 50,
+  499: 160,
+  999: 350,
+};
 
 export const createOrder = async (req, res) => {
   try {
@@ -44,7 +57,6 @@ export const verifyPayment = async (req, res) => {
       razorpay_order_id,
       razorpay_signature,
       amountRupees,
-      metadata,
     } = req.body;
 
     if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
@@ -64,18 +76,20 @@ export const verifyPayment = async (req, res) => {
       razorpay_signature,
       verified: valid,
       amountRupees: amountRupees || null,
-      metadata: metadata || null,
       receivedAt: new Date().toISOString(),
     };
 
     if (!valid) {
-      console.warn("Payment signature verification failed", { razorpay_order_id, razorpay_payment_id });
+      console.warn("Payment signature verification failed", {
+        razorpay_order_id,
+        razorpay_payment_id,
+      });
       return res.status(400).json({ success: false, verified: false, record });
     }
 
     // --- crediting logic starts here ---
     // Require authenticated user to credit
-    
+
     const userId = req.user?.id || req.user?._id;
     if (!userId) {
       return res.status(401).json({
@@ -84,12 +98,15 @@ export const verifyPayment = async (req, res) => {
         record,
       });
     }
-
-    // metadata.credits expected (number or numeric string)
-    const creditsToAdd = Number(metadata?.credits || 0);
+    const creditsToAdd = PRICING[Number(amountRupees)] || 0;
     if (!creditsToAdd || isNaN(creditsToAdd) || creditsToAdd <= 0) {
       // No credits requested — still return success for verification but do not modify user
-      return res.json({ success: true, verified: true, record, creditsApplied: 0 });
+      return res.json({
+        success: true,
+        verified: true,
+        record,
+        creditsApplied: 0,
+      });
     }
 
     // Atomic update: only apply if order id not already present in creditedOrders
@@ -97,9 +114,8 @@ export const verifyPayment = async (req, res) => {
       { _id: userId, creditedOrders: { $ne: razorpay_order_id } }, // condition
       {
         $inc: { credits: creditsToAdd }, // increment credits
-        $push: { creditedOrders: razorpay_order_id }, // mark order as applied
       },
-      { new: true } // return updated doc
+      { new: true } 
     ).lean();
 
     if (!updatedUser) {
@@ -127,4 +143,3 @@ export const verifyPayment = async (req, res) => {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
-

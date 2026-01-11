@@ -20,9 +20,6 @@ import { analyzeDp } from "@/services/ai";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
-// ---------------------------------------------------------
-// Logic: Image Compression Utility (Unchanged)
-// ---------------------------------------------------------
 const compressImage = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -49,9 +46,7 @@ const compressImage = (file: File): Promise<string> => {
   });
 };
 
-// ---------------------------------------------------------
-// Component
-// ---------------------------------------------------------
+
 const DpAnalyzer = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -62,9 +57,6 @@ const DpAnalyzer = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
 
-  // -------------------------------------------------------
-  // Handlers (Unchanged)
-  // -------------------------------------------------------
   useEffect(() => {
     fetchUser();
   }, []);
@@ -111,7 +103,6 @@ const DpAnalyzer = () => {
       }
       const data = await analyzeDp(selectedImage);
       fetchUser();
-      console.log(data);
       setResult(data);
       toast({
         title: "Analysis Complete",
@@ -140,9 +131,6 @@ const DpAnalyzer = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  // -------------------------------------------------------
-  // Render UI (Fixed Overflow)
-  // -------------------------------------------------------
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/50 relative selection:bg-primary/20 overflow-x-hidden">
       {/* Background Decor */}
@@ -171,7 +159,7 @@ const DpAnalyzer = () => {
               </div>
               <Button
                 variant="outline"
-                className="ml-2 md:py-3 text-md bg-primary/70"
+                className="ml-2 md:py-3 text-md bg-orange-700"
                 onClick={() => navigate("/buy-credits")}
               >
                 Buy Credits

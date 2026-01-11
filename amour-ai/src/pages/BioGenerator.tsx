@@ -67,7 +67,6 @@ const BioGenerator = () => {
       fetchUser();
       setResult(data);
       toast({ title: "Success", description: "Fresh bios generated!" });
-      // checkAuth()
     } catch (error) {
       toast({
         title: "Error",
@@ -96,7 +95,6 @@ const BioGenerator = () => {
 
       <div className="container mx-auto pt-20 py-6 px-4 max-w-5xl relative z-10">
         {/* Top Bar with Nav and Credits */}
-        {/* Top Bar with Nav and Credits */}
         <div className="flex justify-between items-center mb-20">
           <Button
             variant="ghost"
@@ -119,7 +117,7 @@ const BioGenerator = () => {
               </div>
               <Button
                 variant="outline"
-                className="ml-2 md:py-3 text-md bg-primary/70"
+                className="ml-2 md:py-3 text-md bg-orange-700"
                 onClick={() => navigate("/buy-credits")}
               >
                 Buy Credits

@@ -75,32 +75,32 @@ const FeaturesSection = () => {
                   Profile Suite
                 </p>
                 <h3 className="text-xl md:text-2xl font-bold text-slate-50">
-                  Optimize your first impression
+                  Make a First and Best impression
                 </h3>
               </div>
             </div>
 
             <p className="mb-8 text-sm md:text-base text-gray-300 leading-relaxed">
-              Everything you need to make your profile irresistible—photos,
+              Everything you need to make your profile irresistible photos,
               bios, and strategy, all tuned by AI to match the kind of people
               you actually want.
             </p>
 
             {/* Individual profile tools */}
-            <div className="space-y-4">
+            <div className="space-y-4 ">
               {profileTools.map((tool, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => tool.path && navigate(tool.path)}
-                  className={`group flex w-full items-start gap-4 rounded-2xl border border-white/5 bg-white/5/5 p-4 text-left transition-all duration-300 ${
+                  className={`group border-gray-700 flex w-full items-start gap-4 rounded-2xl border bg-white/5/5 p-4 text-left transition-all duration-300 ${
                     tool.path
                       ? "hover:border-orange-400/60 hover:bg-white/5 hover:-translate-y-1 cursor-pointer"
                       : "opacity-70 cursor-not-allowed"
                   }`}
                 >
                   <div
-                    className={`mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tool.accent} bg-opacity-80`}
+                    className={`mt-1 flex h-10 w-10 flex-shrink-0 items-center justify-center  rounded-xl bg-gradient-to-br ${tool.accent} bg-opacity-80`}
                   >
                     <tool.icon className="h-5 w-5 text-white" />
                   </div>
@@ -133,7 +133,7 @@ const FeaturesSection = () => {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-green-400" />
-                <span>No guesswork—just clear, actionable upgrades</span>
+                <span>No guesswork just clear, actionable upgrades</span>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { Search, Plus, X, DollarSign, Users, TrendingUp } from "lucide-react";
 import axios from "axios";
 
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 export default function AdminInfluencers() {
   const [list, setList] = useState([]);
@@ -17,6 +18,13 @@ export default function AdminInfluencers() {
 
   const [newContact, setNewContact] = useState("");
   const { toast } = useToast();
+  const { user, fetchUser } = useAuth();
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+
   //Function to add text to clipboard
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -27,25 +35,29 @@ export default function AdminInfluencers() {
     });
   };
 
+  // 1) fetchList: remove q from params
   const fetchList = async () => {
     setLoading(true);
     try {
       const res = await axios.get(`/api/admin/influencers`, {
-        params: { q, page, limit: 50 },
+        params: { page, limit: 50 }, // <-- removed q
       });
       setList(res.data.data.items);
       await new Promise((r) => setTimeout(r, 500));
     } catch (err) {
       console.error(err);
-      alert(err?.response?.data?.error || "Failed to load influencers");
+      toast({
+        title: "Error",
+        description: "Failed to load influencers",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchList();
-  }, [q, page]);
+  }, [page]);
 
   const openPay = (infl) => {
     setSelected(infl);
@@ -57,7 +69,11 @@ export default function AdminInfluencers() {
     if (!selected) return;
     const amount = Number(payAmount);
     if (!amount || amount <= 0) {
-      alert("Invalid amount");
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid payment amount",
+        variant: "destructive",
+      });
       return;
     }
     try {
@@ -69,18 +85,32 @@ export default function AdminInfluencers() {
           note,
         }
       );
-      setList(list.map((i) => (i._id === selected._id ? res.data.data : i)));
-      alert("Payment confirmed!");
+      setList((prev) =>
+        prev.map((i) => (i._id === selected._id ? res.data.data : i))
+      );
+      toast({
+        title: "Payment Successful",
+        description: `Paid ₹${amount.toLocaleString()} to ${selected.name}`,
+        variant: "success",
+      });
       setSelected(null);
     } catch (err) {
-      alert(err?.response?.data?.error || "Payment failed");
+      toast({
+        title: "error",
+        description: err?.message || "Failed to pay",
+        variant: "destructive",
+      });
     }
   };
 
   const createNew = async (e) => {
     e.preventDefault();
     if (!newName || !newContact) {
-      alert("Please fill all fields");
+      toast({
+        title: "Missing Fields",
+        description: "Please fill all fields",
+        variant: "destructive",
+      });
       return;
     }
     try {
@@ -102,22 +132,41 @@ export default function AdminInfluencers() {
       setNewName("");
       setNewContact("");
       setShowCreateForm(false);
-      alert("Influencer created!");
+      fetchList();
+      toast({
+        title: "Influencer created!",
+        description: "New influencer has been added successfully.",
+        variant: "success",
+      });
     } catch (err) {
-      alert(err?.response?.data?.error || "Failed to create");
+      toast({
+        title: "Failed to create",
+        description: err?.response?.data?.error || "Failed to create",
+        variant: "destructive",
+      });
     }
   };
 
-  const filteredList = list.filter(
-    (i) =>
-      i.name.toLowerCase().includes(q.toLowerCase()) ||
-      i.contact.toLowerCase().includes(q.toLowerCase())
-  );
+ const filteredList = list.filter(i => {
+  const name = (i.name || "").toLowerCase();
+  const contact = (i.contact || "").toLowerCase();
+  const qLower = q.toLowerCase();
+  return name.includes(qLower) || contact.includes(qLower);
+});
 
-  const totalEarnings = list.reduce((sum, i) => sum + i.totalEarning, 0);
+
+const totalEarnings = list.reduce((sum, i) => sum + Number(i.totalEarning || 0), 0);
   const totalPending = list.reduce((sum, i) => sum + i.pendingPayment, 0);
   const totalReferrals = list.reduce((sum, i) => sum + i.referralCount, 0);
 
+  if (user && !user.adminAccess){
+    return (
+      <div className="p-8 text-center text-white">
+      <h2>Access Denied</h2>
+      <p>You do not have permission to view this page.</p>
+    </div>
+    )
+  }
   return (
     <div className="min-h-screen bg-[#020202] relative overflow-hidden">
       {/* Background Glow Effects */}
@@ -279,19 +328,18 @@ export default function AdminInfluencers() {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <button>
-                        <button
-                          onClick={() =>
-                            copyToClipboard(
-                              `http://localhost:8080/signup?ref=${i.referalLink}`
-                            )
-                          }
-                          className="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium"
-                        >
-                          http://localhost:8080/signup?ref={i.referalLink}
-                        </button>
+                      <button
+                        onClick={() =>
+                          copyToClipboard(
+                            `http://localhost:8080/signup?ref=${i.referalLink}` // use template literal
+                          )
+                        }
+                        className="inline-flex items-center px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-300 text-sm font-medium"
+                      >
+                        {`http://localhost:8080/signup?ref=${i.referalLink}`}
                       </button>
                     </td>
+
                     <td className="px-6 py-4 text-gray-400 text-sm">
                       {i.contact}
                     </td>

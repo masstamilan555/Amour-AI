@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//Analyze DP
 export async function analyzeDp(base64Image: string) {
   if (!base64Image || typeof base64Image !== "string") {
     throw new Error("image_required");
@@ -50,9 +51,7 @@ export async function analyzeDp(base64Image: string) {
 }
 
 
-// ---------------------------------------------------------
 // Bio Generator
-// ---------------------------------------------------------
 type BiosPayload = { hobbies: string; vibe: string; job?: string };
 
 export async function generateBios(payload: BiosPayload) {
@@ -101,40 +100,39 @@ export async function generateBios(payload: BiosPayload) {
   }
 }
 
-// ---------------------------------------------------------
-// DP Image Analyzer (Vision)
-// ---------------------------------------------------------
+// chat Analyzer (Text)
 export async function analyzeChatText(chatText: string) {
   if (!chatText || typeof chatText !== "string") {
     throw new Error("chatText_required");
   }
-
+  
   try {
     const resp = await axios.post("api/ai/analyze-chat", { chatText });
     const json = resp.data;
-
+    
     if (!json?.ok) {
       throw new Error(json?.error || "analyzeChatText: unknown error");
     }
-
+    
     return json.result;
   } catch (e) {
     if (e.response && e.response.data) {
       throw new Error(
         e.response.data.error ||
-          `analyzeChatText: ${e.response.status} ${e.response.statusText}`
+        `analyzeChatText: ${e.response.status} ${e.response.statusText}`
       );
     }
     throw new Error(`analyzeChatText: ${e.message}`);
   }
 }
 
+// chat Image Analyzer (Vision)
 export async function analyzeChatImage(file: File) {
   if (!file) throw new Error("image_required");
-
+  
   const fd = new FormData();
   fd.append("image", file);
-
+  
   try {
     const resp = await axios.post("api/ai/analyze-chat-image", fd, {
       headers: { "Content-Type": "multipart/form-data" },
