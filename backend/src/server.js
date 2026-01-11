@@ -16,18 +16,13 @@ import { protectRoute } from "./middleware/protectRoutes.js";
 
 const app = express();
 
-const CLIENT_URL = [
-  "http://localhost:8080",
-  "https://amour123.netlify.app",
-  "https://amour-delta.vercel.app",
-  "https://amour-gb3dlao5a-masstamilan555s-projects.vercel.app",
-];
+
 const PORT = process.env.PORT || 4000;
 
 app.use(helmet());
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: process.env.CLIENT_URL,
     credentials: true, // allow cookies
   })
 );
