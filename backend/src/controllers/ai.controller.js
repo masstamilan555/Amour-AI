@@ -594,7 +594,7 @@ export const analyzeProfileImage = async (req, res, next) => {
 
     // Deduct credits after successful response
     try {
-      await deductCredits(req.user._id, 4);
+      await deductCredits(req.user._id, 6);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -656,7 +656,7 @@ export const generateBios = async (req, res, next) => {
     }
 
     try {
-      await deductCredits(req.user._id, 1);
+      await deductCredits(req.user._id, 2);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -696,7 +696,7 @@ export const analyzeChat = async (req, res, next) => {
     }
 
     try {
-      await deductCredits(req.user._id, 1);
+      await deductCredits(req.user._id, 5);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
@@ -785,7 +785,7 @@ export const analyzeChatImage = async (req, res, next) => {
         .json({ ok: false, error: "empty_vision_response" });
 
     try {
-      await deductCredits(req.user._id, 4);
+      await deductCredits(req.user._id, 6);
     } catch (err) {
       if (err.message === "insufficient_credits")
         return res
